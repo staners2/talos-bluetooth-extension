@@ -1,0 +1,108 @@
+diff --git a/.kres.yaml b/.kres.yaml
+--- a/.kres.yaml
++++ b/.kres.yaml
+@@ -40,5 +40,6 @@ targets:
+     - mdadm
+     - mei
++    - mediatek-bluetooth-firmware
+     - mellanox-mstflint
+     - metal-agent
+     - multipath-tools
+diff --git a/MAINTAINERS.md b/MAINTAINERS.md
+--- a/MAINTAINERS.md
++++ b/MAINTAINERS.md
+@@ -42,6 +42,7 @@ If the field is marked as `Needs Maintainer`, it means that the package is curre
+ | lldpd                                     | Nokia (Niklas Wik) | [salkin](https://github.com/salkin)                                                      |
+ | mdadm                                     | Serge Logvinov     | [sergelogvinov](https://github.com/sergelogvinov)                                        |
+ | mei                                       | Nick Meyer         | [e3b0c442](https://github.com/e3b0c442)                                                  |
++| mediatek-bluetooth-firmware               | Needs Maintainer   | NA                                                                                       |
+ | metal-agent                               | Sidero Labs        | NA                                                                                       |
+ | multipath-tools                           | INS                | [Untersander](https://github.com/Untersander), [SimLi1333](https://github.com/SimLi1333) |
+ | nebula                                    | s e                | [iamwacko](https://github.com/iamwacko)                                                  |
+diff --git a/Makefile b/Makefile
+--- a/Makefile
++++ b/Makefile
+@@ -104,5 +104,6 @@ TARGETS += lldpd
+ TARGETS += mdadm
+ TARGETS += mei
++TARGETS += mediatek-bluetooth-firmware
+ TARGETS += mellanox-mstflint
+ TARGETS += metal-agent
+ TARGETS += multipath-tools
+diff --git a/firmware/mediatek-bluetooth-firmware/README.md b/firmware/mediatek-bluetooth-firmware/README.md
+new file mode 100644
+--- /dev/null
++++ b/firmware/mediatek-bluetooth-firmware/README.md
+@@ -0,0 +1,14 @@
++# MediaTek Bluetooth Firmware
++
++This system extension provides the single Linux firmware binary required by
++the validated MediaTek MT7922 USB Bluetooth function (`0e8d:7922`). It is kept
++separate from `bluetooth-usb-drivers` so the driver extension remains generic
++and firmware licensing and provenance remain independently auditable.
++
++The binary and `LICENCE.mediatek` are copied from the pinned Sidero Labs
++`linux-firmware` package image used by the matching Talos release. No wireless
++LAN firmware or other MediaTek device firmware is included.
++
++Select this extension together with `bluetooth-usb-drivers` when assembling an
++installer for MT7922 hardware. Realtek hardware should continue to use the
++official `siderolabs/realtek-firmware` extension instead.
+diff --git a/firmware/mediatek-bluetooth-firmware/manifest.yaml.tmpl b/firmware/mediatek-bluetooth-firmware/manifest.yaml.tmpl
+new file mode 100644
+--- /dev/null
++++ b/firmware/mediatek-bluetooth-firmware/manifest.yaml.tmpl
+@@ -0,0 +1,11 @@
++version: v1alpha1
++metadata:
++  name: mediatek-bluetooth-firmware
++  version: "{{ .VERSION }}"
++  author: Talos Bluetooth Extension contributors
++  description: |
++    [{{ .TIER }}] This system extension provides the MediaTek MT7922 Bluetooth
++    firmware binary from the pinned Sidero Labs linux-firmware package.
++  compatibility:
++    talos:
++      version: ">= v1.13.0-alpha.2"
+diff --git a/firmware/mediatek-bluetooth-firmware/pkg.yaml b/firmware/mediatek-bluetooth-firmware/pkg.yaml
+new file mode 100644
+--- /dev/null
++++ b/firmware/mediatek-bluetooth-firmware/pkg.yaml
+@@ -0,0 +1,30 @@
++name: mediatek-bluetooth-firmware
++variant: scratch
++shell: /bin/bash
++dependencies:
++  - stage: base
++  - image: "{{ .BUILD_ARG_PKGS_PREFIX }}/linux-firmware:{{ .BUILD_ARG_PKGS }}"
++steps:
++  - install:
++      - |
++        install -D -m 0644 \
++          /usr/lib/firmware/mediatek/BT_RAM_CODE_MT7922_1_1_hdr.bin \
++          /rootfs/usr/lib/firmware/mediatek/BT_RAM_CODE_MT7922_1_1_hdr.bin
++        install -D -m 0644 \
++          /usr/lib/firmware/LICENSES/LICENCE.mediatek \
++          /rootfs/usr/lib/firmware/LICENSES/LICENCE.mediatek
++    test:
++      - |
++        test -s /rootfs/usr/lib/firmware/mediatek/BT_RAM_CODE_MT7922_1_1_hdr.bin
++        test -s /rootfs/usr/lib/firmware/LICENSES/LICENCE.mediatek
++        test "$(find /rootfs/usr/lib/firmware/mediatek -type f | wc -l)" -eq 1
++      - |
++        mkdir -p /extensions-validator-rootfs
++        cp -r /rootfs/ /extensions-validator-rootfs/rootfs
++        cp /pkg/manifest.yaml /extensions-validator-rootfs/manifest.yaml
++        /extensions-validator validate --rootfs=/extensions-validator-rootfs --pkg-name="${PKG_NAME}"
++finalize:
++  - from: /rootfs
++    to: /rootfs
++  - from: /pkg/manifest.yaml
++    to: /
+diff --git a/firmware/mediatek-bluetooth-firmware/vars.yaml b/firmware/mediatek-bluetooth-firmware/vars.yaml
+new file mode 100644
+--- /dev/null
++++ b/firmware/mediatek-bluetooth-firmware/vars.yaml
+@@ -0,0 +1,2 @@
++VERSION: "{{ .LINUX_FIRMWARE_VERSION }}"
++TIER: "contrib"

@@ -1,0 +1,48 @@
+schemaVersion: 1
+node: target-node
+architecture: amd64
+observedTalosVersion: v1.13.3
+factorySchematicID: c5e585882ded5c117077df8abfbaee4ea3045da3647ae5b21ed5067df148c20c
+extensions:
+  - name: amdgpu
+    presentInCurrentImage: true
+    source: custom-kernel
+  - name: amd-ucode
+    presentInCurrentImage: true
+    source: official
+  - name: realtek-firmware
+    presentInCurrentImage: true
+    source: official
+  - name: nvme-cli
+    presentInCurrentImage: true
+    source: official
+  - name: iscsi-tools
+    presentInCurrentImage: true
+    source: official
+  - name: nfs-utils
+    presentInCurrentImage: true
+    source: official
+  - name: fuse3
+    presentInCurrentImage: true
+    source: official
+  - name: drbd
+    presentInCurrentImage: true
+    source: custom-kernel
+  - name: uhid
+    presentInCurrentImage: true
+    source: custom-kernel
+  - name: uinput
+    presentInCurrentImage: true
+    source: custom-kernel
+  - name: usb-audio-drivers
+    presentInCurrentImage: true
+    source: custom-kernel
+  - name: v4l-uvc-drivers
+    presentInCurrentImage: true
+    source: custom-kernel
+  - name: bluetooth-usb-drivers
+    presentInCurrentImage: false
+    source: custom-kernel
+  - name: mediatek-bluetooth-firmware
+    presentInCurrentImage: false
+    source: custom-firmware

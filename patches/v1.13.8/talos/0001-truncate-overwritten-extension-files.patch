@@ -1,0 +1,44 @@
+diff --git a/internal/pkg/extensions/compress.go b/internal/pkg/extensions/compress.go
+--- a/internal/pkg/extensions/compress.go
++++ b/internal/pkg/extensions/compress.go
+@@ -217,6 +217,6 @@ func handleFileOp(st fs.FileInfo, srcPath, dstPath string, op func(string) error
+ 	defer src.Close() //nolint:errcheck
+ 
+-	dst, err := os.OpenFile(dstPath, os.O_CREATE|os.O_WRONLY, st.Mode().Perm())
++	dst, err := os.OpenFile(dstPath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, st.Mode().Perm())
+ 	if err != nil {
+ 		return err
+ 	}
+diff --git a/internal/pkg/extensions/compress_test.go b/internal/pkg/extensions/compress_test.go
+new file mode 100644
+--- /dev/null
++++ b/internal/pkg/extensions/compress_test.go
+@@ -0,0 +1,28 @@
++// This Source Code Form is subject to the terms of the Mozilla Public
++// License, v. 2.0. If a copy of the MPL was not distributed with this
++// file, You can obtain one at http://mozilla.org/MPL/2.0/.
++
++package extensions
++
++import (
++	"os"
++	"path/filepath"
++	"testing"
++
++	"github.com/stretchr/testify/require"
++)
++
++func TestCopyFilesTruncatesExistingDestination(t *testing.T) {
++	t.Parallel()
++
++	sourcePath := filepath.Join(t.TempDir(), "modules.softdep")
++	destinationPath := filepath.Join(t.TempDir(), "modules.softdep")
++
++	require.NoError(t, os.WriteFile(sourcePath, []byte("short\n"), 0o644))
++	require.NoError(t, os.WriteFile(destinationPath, []byte("long destination content\n"), 0o644))
++	require.NoError(t, copyFiles(sourcePath, destinationPath))
++
++	contents, err := os.ReadFile(destinationPath)
++	require.NoError(t, err)
++	require.Equal(t, "short\n", string(contents))
++}

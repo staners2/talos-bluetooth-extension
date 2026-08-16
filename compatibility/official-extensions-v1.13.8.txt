@@ -1,0 +1,6 @@
+ghcr.io/siderolabs/amd-ucode:20260622@sha256:ceab0ca292cd2a33e21c2ff4acc3afa01e8dea37f763aec1b7ae77784edfff7a
+ghcr.io/siderolabs/fuse3:3.18.2@sha256:889effb408908e8bbe20e3eead6067596abf12e56a9e9a958fa8e3925d903f8d
+ghcr.io/siderolabs/iscsi-tools:v0.2.0@sha256:8617f0503e0f2289322fa376e08a8609df7b9cf4f79876b88c544e90e5bcf606
+ghcr.io/siderolabs/nfs-utils:v0.1.1@sha256:d0f8a52d2b573b770c9248e0208283ef07f8ce93b305e3633a418a650aed0928
+ghcr.io/siderolabs/nvme-cli:v2.14@sha256:fa88f6b7df0c675792d4cd0213d4592bee6644e896c9afae8ee396a0a6292874
+ghcr.io/siderolabs/realtek-firmware:20260622@sha256:946dfde0e30304b63c234e03b296cf2b78bec4c4cfea031e469ab58e16923342
