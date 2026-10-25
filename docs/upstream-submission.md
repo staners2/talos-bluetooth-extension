@@ -2,7 +2,19 @@
 
 ## Submission state
 
-The complete upstream series is published and ready for maintainer review:
+**Status checked: 2026-10-25.** The Bluetooth PRs remain open and unmerged, but
+upstream maintainers have opposed adding Bluetooth to Talos. Their stated reasons
+are the Bluetooth stack's history of CVEs, the added kernel attack surface and
+the long-term support burden for a server OS. See the
+[security objection](https://github.com/siderolabs/pkgs/pull/1651#issuecomment-5328377153)
+and the follow-up on
+[maintenance and scope](https://github.com/siderolabs/pkgs/pull/1651#issuecomment-5359336126).
+
+Treat this as an unofficial, out-of-tree project with no expected mainstream
+inclusion, not an extension awaiting an official release. The open PR state is
+not approval or a commitment to ship Bluetooth support.
+
+The author's published series is retained for reference:
 
 - [siderolabs/pkgs#1651](https://github.com/siderolabs/pkgs/pull/1651) enables
   the kernel modules from signed commit
@@ -15,11 +27,12 @@ The complete upstream series is published and ready for maintainer review:
   `ce43ee86f8c44bd4e3002b9762aa542ba15b6688`;
 - [siderolabs/talos#14056](https://github.com/siderolabs/talos/pull/14056)
   fixes extension-file truncation from signed commit
-  `5bebe5f984147ef180a9dea076c93ed22b8c5d45`.
+  `5bebe5f984147ef180a9dea076c93ed22b8c5d45`; this independent fix was merged
+  on 2026-08-18 and does not add Bluetooth support.
 
-All four commits are reported as `Verified` by GitHub and include DCO
-sign-offs. Merge and backport decisions now belong to the Sidero Labs
-maintainers.
+The original submissions included signed commits and DCO sign-offs. The merged
+Talos fix is separate from the unmerged Bluetooth kernel, driver and firmware
+changes.
 
 ## Problem
 
